@@ -1,12 +1,21 @@
 import PropTypes from 'prop-types';
-import { requireNativeComponent, ViewPropTypes } from 'react-native';
+import { requireNativeComponent, ViewPropTypes, NativeModules } from 'react-native';
 
 var iface = {
   name: 'ChromiumWebView',
   propTypes: {
-    src: PropTypes.string,
+    source: PropTypes.any,
     ...ViewPropTypes // include the default view properties
   },
 };
 
-module.exports = requireNativeComponent('ChromiumWebView', iface);
+const ChromiumOptions = NativeModules.ChromiumOptions
+
+const AddLicense = (licenceKey) => {
+  return ChromiumOptions.AddLicense(licenceKey)
+}
+
+module.exports = {
+  WebView: requireNativeComponent('ChromiumWebView', iface),
+  AddLicense: AddLicense
+}

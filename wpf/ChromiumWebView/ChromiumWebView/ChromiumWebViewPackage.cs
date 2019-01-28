@@ -15,7 +15,10 @@ namespace ChromiumWebView
 
         public IReadOnlyList<INativeModule> CreateNativeModules(ReactContext reactContext)
         {
-            return Array.Empty<INativeModule>();
+            return new List<INativeModule>
+            {
+                new ChromiumOptionsModule(reactContext),
+            };
 
         }
 

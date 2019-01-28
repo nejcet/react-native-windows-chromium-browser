@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using CefSharp;
-using CefSharp.Wpf;
 using System.Windows.Threading;
 using System.Windows.Controls;
 using ReactNative.Views.ControlView;
@@ -12,88 +10,42 @@ using System.Windows;
 
 namespace ChromiumWebView
 {
-    class WebView: ChromiumWebBrowser, IDisposable
+    class WebView : EO.Wpf.WebControl, IDisposable
     {
-        private DispatcherTimer _cefInitTimer = null;
-        private String _initUrl = String.Empty;
 
-        public WebView(): base()
+        public WebView(String url) : base()
         {
-            initCef();
+            this.WebView.Url = url;
         }
 
-        private void initCef()
+        public String currentUrl
         {
-            if (!Cef.IsInitialized)
-            {
-                if (Cef.Initialize(new CefSettings(), performDependencyCheck: true, browserProcessHandler: null))
-                {
-                    // IsInitialized
-                }
-                else
-                {
-                    // throw exception!!
-                }
+            get {
+                return this.WebView.Url;
+            }
+            set {
+                this.WebView.Url = value;
             }
         }
 
-        private void startCefInitTimer()
+        public void setCurrentUrl(String url)
         {
-            if (_cefInitTimer == null)
-            {
-                _cefInitTimer = new DispatcherTimer();
-                _cefInitTimer.Interval = TimeSpan.FromMilliseconds(3000.0);
-                _cefInitTimer.Tick += OnInitTimerTick;
-                _cefInitTimer.Start();
-            }
+            this.WebView.Url = url;
         }
 
-        private void stopCefInitTimer()
+        public void NavigateToString(String html)
         {
-            _initUrl = String.Empty;
-
-            if (_cefInitTimer != null)
-            {
-                _cefInitTimer.Tick -= OnInitTimerTick;
-                _cefInitTimer.Stop();
-            }
+            this.WebView.LoadHtml(html);
         }
 
-        private void OnInitTimerTick(object sender, object e)
+        public void NavigateToString(String html, String basePath)
         {
-            if (_cefInitTimer != null)
-            {
-                if ( Cef.IsInitialized && this.IsInitialized)
-                {
-                    this.Load(_initUrl);
-                    stopCefInitTimer();
-                }
-            }
+            this.WebView.LoadHtml(html, basePath);
         }
 
-        
-
-        public void Cleanup()
+        public void Dispose()
         {
-            stopCefInitTimer();
-            this.Dispose();
+            // TODO: cleanup webview
         }
-
-        public string Source
-        {
-            set
-            {
-                if (this.IsInitialized)
-                {
-                    this.Load(value);
-                }
-                else
-                {
-                    _initUrl = value;
-                    startCefInitTimer();
-                }
-            }
-        }
-
     }
 }
