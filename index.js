@@ -1,40 +1,12 @@
-import ReactNative from 'react-native'
+import PropTypes from 'prop-types';
+import { requireNativeComponent, ViewPropTypes } from 'react-native';
 
-const {
-  DeviceEventEmitter,
-  NativeAppEventEmitter,
-  Platform,
-  NativeModules
-} = ReactNative
+var iface = {
+  name: 'ChromiumWebView',
+  propTypes: {
+    src: PropTypes.string,
+    ...ViewPropTypes // include the default view properties
+  },
+};
 
-const ChromiumWebView = NativeModules.ChromiumWebView
-
-export const unzip = (source, target) => {
-  return RNZipArchive.unzip(source, target)
-}
-
-export const unzipWithPassword = (source, target, password) => {
-  return RNZipArchive.unzip(source, target, password)
-}
-
-export const isPasswordProtected = (source) => {
-  return RNZipArchive.isPasswordProtected(source)
-}
-
-export const zip = (source, target) => {
-  return RNZipArchive.zip(source, target)
-}
-
-export const unzipAssets = (source, target) => {
-  if (!RNZipArchive.unzipAssets) {
-    throw new Error('unzipAssets not supported on this platform')
-  }
-
-  return RNZipArchive.unzipAssets(source, target)
-}
-
-export const subscribe = callback => {
-  const emitter =
-    Platform.OS === 'ios' ? NativeAppEventEmitter : DeviceEventEmitter
-  return emitter.addListener('zipArchiveProgressEvent', callback)
-}
+module.exports = requireNativeComponent('ChromiumWebView', iface);

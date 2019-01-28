@@ -6,16 +6,15 @@ using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using ReactNative.UIManager;
 using ReactNative.UIManager.Annotations;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Windows;
-using System.Windows.Media;
+using System.Windows.Controls;
+using System.Windows.Threading;
 
 namespace ChromiumWebView
 {
-    class ChromiumWebViewManager : SimpleViewManager<ChromiumWebView>
+    class ChromiumWebViewManager : SimpleViewManager<WebView>
     {
+
         public override string Name
         {
             get
@@ -24,15 +23,24 @@ namespace ChromiumWebView
             }
         }
 
-        public override void OnDropViewInstance(ThemedReactContext reactContext, ChromiumWebView view)
+        [ReactProp("src")]
+        public void SetSource(WebView view, string source)
         {
-            base.OnDropViewInstance(reactContext, view);
-            //view.Dispose();
+            var webView = (WebView)view;
+            webView.Source = source;
         }
 
-        protected override ChromiumWebView CreateViewInstance(ThemedReactContext reactContext)
+        public override void OnDropViewInstance(ThemedReactContext reactContext, WebView view)
         {
-            return new ChromiumWebView();
+            base.OnDropViewInstance(reactContext, view);
+            view.Cleanup();
+        } 
+
+        protected override WebView CreateViewInstance(ThemedReactContext reactContext)
+        {
+            return new WebView(); 
         }
+
+      
     }
 }
